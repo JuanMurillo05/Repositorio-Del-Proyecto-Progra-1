@@ -13,6 +13,9 @@ ListaEmpleado::~ListaEmpleado(){
 		delete actual;
 	}
 }
+NodoEmpleado* ListaEmpleado::getCabeza() {
+		return cabeza;
+	}
 bool ListaEmpleado::vacio(){
 	return cabeza == NULL;
 }
