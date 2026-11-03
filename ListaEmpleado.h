@@ -13,6 +13,8 @@ public:
 	int contar();
 	void agregarEmpleado(Empleado* empleado);
 	string mostrar();
+	NodoEmpleado* getCabeza();
+	
 	
 private:
 	NodoEmpleado *cabeza;
