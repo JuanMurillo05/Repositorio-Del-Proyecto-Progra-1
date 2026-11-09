@@ -1,3 +1,5 @@
+//en esta clase planilla podemos observar como se da el principio SOLID de inversion de dependencia, ya que la clase planilla trabaja directamente con la clase abstracta de Empleado y no con las clases concretas de medico administrativo y enfermero 
+//esto tambien es gracias al polimorfismo ya que cada empleado ejecuta su propios metodos para realizar los calculos y esto permite poder agregar diferentes tipos de empleados sin tener que modificar la clase planilla 
 #include "Planilla.h"
 
 Planilla::Planilla(ListaEmpleado* empleados, ListaDepartamento* departamentos) {
