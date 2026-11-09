@@ -118,7 +118,7 @@ void ListaPuesto::autoGuardar(ofstream& salida){
 	int cantidad = 0;
 	actual = cabeza;
 	
-	while(actual != NULL){
+	while(actual != NULL){//recorre la lista para contar los puestos 
 	cantidad++;
 	actual = actual->getSig();
 	}
@@ -126,7 +126,7 @@ void ListaPuesto::autoGuardar(ofstream& salida){
 	salida<<cantidad<<endl;
 	actual = cabeza;
 	
-	while(actual != NULL){
+	while(actual != NULL){//guardar la informacion de cada puesto 
 	actual->getPuesto()->autoGuardar(salida);
 	actual = actual->getSig();
 	}
@@ -134,19 +134,19 @@ void ListaPuesto::autoGuardar(ofstream& salida){
 
 void ListaPuesto::autoLeer(ifstream& entrada){
 	int cantidad;
-	entrada>>cantidad;
+	entrada>>cantidad; //lee la cantidad de puestos que deben recuperarse 
 	
-	if(!entrada || cantidad < 0){
+	if(!entrada || cantidad < 0){//comprueba que la lectura fuera correcta y que la cantidad no sea negativa 
 	return;
 	}
 	
-	for(int i=0;i<cantidad;i++){
+	for(int i=0;i<cantidad;i++){//recorre el proceso segun la cantidad de puestos registrados 
 	Puesto *puesto = new Puesto();
 	puesto->autoLeer(entrada);
 	
-	if(entrada){
-	agregarPuesto(puesto);
-	}else{
+	if(entrada){//comprueba de que la lectura haya sido correcta 
+	agregarPuesto(puesto);//si lo es agrega el puesto a la lista 
+	}else{//y sino libera la memoria del puesto 
 	delete puesto;
 	break;
 	}
