@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-#include <iomanip>
+#include <iomanip>//libreria para que asi se muestren numeros grandes ya que aveces si el calculo da un numero muy grande el numero no se muestra, por eso tambien usamos fixed(2) para que nos de dos numeros decimales 
 #include <fstream>
 //la clase empleado es una clase abstracta quiere decir que como tal no se puede crear un objeto de tipo empleado sino que sera de tipo medico, administativo o enfermero
 //por eso tenemos atributos protegidos para que asi estos los hereden las clases hijas
