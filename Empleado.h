@@ -5,7 +5,9 @@
 #include <sstream>
 #include <iomanip>
 #include <fstream>
-
+//la clase empleado es una clase abstracta quiere decir que como tal no se puede crear un objeto de tipo empleado sino que sera de tipo medico, administativo o enfermero
+//por eso tenemos atributos protegidos para que asi estos los hereden las clases hijas
+//se utiliza el principio SOLID sobre responsabilidad unica ya que esta clase se encarga de obtener la informacion del empleado y de hacer los calculos salariales
 using namespace std;
 
 class Empleado {
