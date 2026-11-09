@@ -1,3 +1,7 @@
+Participantes
+-Juan Murillo Madrigal : 119540357
+-Johell Jimenez Barquero : 208870194
+-Alejandro Montoya Morera : 208930244
 # Proyecto de programacion 1
 
 # Descripcion del proyecto
