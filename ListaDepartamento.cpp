@@ -113,10 +113,10 @@ string ListaDepartamento::mostrarDepartamentos(){
 }
 
 void ListaDepartamento::autoGuardar(ofstream& salida){
-	salida<<contar()<<endl;
+	salida<<contar()<<endl;//guarda primero la cantidad de departamentos gracias a la funcion que ya habiamos hecho de contar
 	actual = cabeza;
 	
-	while(actual != NULL){
+	while(actual != NULL){//recorremos la lista para que cada departamento guarde sus propios datos y tambien los puestos que tienen
 	actual->getDepartamento()->autoGuardar(salida);
 	actual = actual->getSig();
 	}
@@ -124,9 +124,9 @@ void ListaDepartamento::autoGuardar(ofstream& salida){
 
 void ListaDepartamento::autoLeer(ifstream& entrada){
 	int cantidad;
-	entrada>>cantidad;
+	entrada>>cantidad;//lee la cantidad de departamentos que hay 
 	
-	for(int i=0;i<cantidad;i++){
+	for(int i=0;i<cantidad;i++){//recorre la canridad que hay, luego crea la memoria dinamica, recupera los datos y finalmente agrega el departamento
 	Departamento *departamento = new Departamento();
 	departamento->autoLeer(entrada);
 	agregarDepartamento(departamento);
