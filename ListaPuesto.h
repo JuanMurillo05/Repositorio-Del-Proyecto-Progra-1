@@ -20,7 +20,8 @@ private:
 	NodoPuesto *cabeza;
 	NodoPuesto *actual;
 	NodoPuesto *cola;
-	
+
+//evitan que se copien listas lo cual podria provocar que dos listas compartan el mismo nodo y que se libere dos veces la misma memoria 
 	ListaPuesto(const ListaPuesto&) = delete;
 	ListaPuesto& operator=(const ListaPuesto&) = delete;
 };
