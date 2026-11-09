@@ -8,7 +8,7 @@ Calcula los salarios de cada uno de estos mediante difernetes funciones. Se util
 # Funcionamiento del proyecto
 
 Se trabaja con diferentes tipos de empleados cada uno usa calculos y datos diferentes por ejemplo los medicos reciben pagos por guardia mientras que administrativo no.Para calcular la planilla se toman en cuenta el salario base, las horas extra, las bonificaciones y las deducciones. Con esto podemos obtener el salario final de cada empleado.
-Tambien se trabaja con archivos txt para que podamos guardar los datos y calculos ya realizado sin perderlos.
+Tambien se trabaja con archivos txt para guardar la informacion de los departamentos y puestos, y asi poder recuperarla cuando volvamos a utilizar el programa.
 
 # Prompts utilizados para preguntarle a la IA
 
@@ -20,7 +20,7 @@ Para el proyecto utilizamos diferentes ia´s para asesorarnos y saber si lo que 
 
 "quiero que me ayude a adaptar mis clases puesto y departamento con respecto a la clase empleado que hizo mi compañero"
 
-#Cocnclusion
+# Cocnclusion
 
 En este proyecto se pudo poner en practica todo lo visto en clase como lo son listas, nodos, archivos txt para guardar y recuperar informacion del programa.
 
