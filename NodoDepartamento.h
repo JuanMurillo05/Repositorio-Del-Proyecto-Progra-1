@@ -2,6 +2,8 @@
 #define NODODEPARTAMENTO_H
 #include "Departamento.h"
 
+//clase que representa un nodo de la lista enlazada de departamentos, cada nodo almacena un departamento y un enlace hacia el siguiente 
+
 class NodoDepartamento {
 public:
 	NodoDepartamento(Departamento *departamento);
