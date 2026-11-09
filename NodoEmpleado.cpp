@@ -1,7 +1,7 @@
 #include "NodoEmpleado.h"
 
 NodoEmpleado::NodoEmpleado(Empleado* dato) {
-	this->setDato(dato);
+	this->setDato(dato);  //recibe un empleado y lo almacena utilizando el setter 
 	this-> siguiente = NULL;
 }
 NodoEmpleado::~NodoEmpleado(){
