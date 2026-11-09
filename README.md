@@ -20,7 +20,7 @@ Para el proyecto utilizamos diferentes ia´s para asesorarnos y saber si lo que 
 
 "quiero que me ayude a adaptar mis clases puesto y departamento con respecto a la clase empleado que hizo mi compañero"
 
-# Cocnclusion
+# Conclusion
 
 En este proyecto se pudo poner en practica todo lo visto en clase como lo son listas, nodos, archivos txt para guardar y recuperar informacion del programa.
 
