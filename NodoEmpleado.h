@@ -2,6 +2,9 @@
 #define NODOEMPLEADO_H
 #include "Empleado.h"
 
+//clase que representa un nodo de la lista enlazada de empleados
+//cada nodo almacena un puntero a un objeto Empleado y un puntero al siguiente nodo de la lista 
+
 class NodoEmpleado {
 public:
 	NodoEmpleado(Empleado* dato);
