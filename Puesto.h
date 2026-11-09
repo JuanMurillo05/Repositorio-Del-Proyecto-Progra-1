@@ -5,6 +5,8 @@
 #include<string>
 #include<fstream>
 
+//clase que representa un puesto dentro de un departamento
+
 using namespace std;
 
 class Puesto {
