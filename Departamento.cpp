@@ -4,11 +4,11 @@ Departamento::Departamento() {
 	
 	codigoDepartamento = new int(0);
 	nombreDepartamento = new string("");
-    listaPuesto = new ListaPuesto();
+	listaPuesto = new ListaPuesto();
 }
 
 Departamento::Departamento(int codigoDepartamento, string nombreDepartamento){
-
+	
 	this->codigoDepartamento = new int(codigoDepartamento);
 	this->nombreDepartamento = new string(nombreDepartamento);
 	listaPuesto = new ListaPuesto();
@@ -47,6 +47,10 @@ Puesto *Departamento::buscarPuesto(int codigo){
 	return listaPuesto->buscarPuesto(codigo);
 }
 
+bool Departamento::eliminarPuesto(int codigo){
+	return listaPuesto->eliminarPuesto(codigo);
+}
+
 string Departamento::mostrarPuesto(){
 	return listaPuesto->mostrarPuestos();
 }
@@ -75,4 +79,3 @@ string Departamento::toString(){
 	
 	return a.str();
 }
-
