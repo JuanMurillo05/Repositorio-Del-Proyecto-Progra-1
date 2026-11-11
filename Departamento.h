@@ -16,6 +16,7 @@ public:
 	
 	void agregarPuesto(Puesto *puesto);
 	Puesto *buscarPuesto(int codigo);
+	bool eliminarPuesto(int codigo);
 	string mostrarPuesto();
 	
 	void autoGuardar(ofstream& salida);
@@ -29,5 +30,3 @@ private:
 };
 
 #endif
-
-
