@@ -1,13 +1,15 @@
 #include "Administrativo.h"
 
-Administrativo::Administrativo():Empleado() {
+Administrativo::Administrativo() : Empleado() {
 	puestoLaboral = "";
 }
-Administrativo::Administrativo(string nombre, string cedula, int codigoDepartamento, double salarioBase, int horasExtra, string puestoLaboral): Empleado(nombre, cedula, codigoDepartamento, salarioBase, horasExtra) {
+Administrativo::Administrativo(string nombre, string cedula, int codigoDepartamento, double salarioBase, int horasExtra,
+                               string puestoLaboral)
+	: Empleado(nombre, cedula, codigoDepartamento, salarioBase, horasExtra) {
 	this->puestoLaboral = puestoLaboral;
 }
 Administrativo::~Administrativo(){
-	
+
 }
 //setters y getters
 void Administrativo::setPuestoLaboral(string puestoLaboral){
@@ -28,13 +30,15 @@ void Administrativo::autoGuardar(ofstream& salida){
 	salida << puestoLaboral << endl;
 }
 Empleado* Administrativo::autoLeer(ifstream& entrada){
-	Administrativo* administrativo=new Administrativo();
-	entrada>>administrativo->nombre>>administrativo->cedula>>administrativo->codigoDepartamento>>administrativo->salarioBase>>administrativo->horasExtra>>administrativo->puestoLaboral;
+	Administrativo* administrativo = new Administrativo();
+	entrada >> administrativo->nombre >> administrativo->cedula >> administrativo->codigoDepartamento
+	        >> administrativo->salarioBase >> administrativo->horasExtra
+	        >> administrativo->puestoLaboral;
 	return administrativo;
 }
 string Administrativo::toString(){
 	stringstream x;
-	x<<Empleado::toString();
-	x<<"Puesto laboral : "<<puestoLaboral<<endl;
+	x << Empleado::toString();
+	x << "Puesto laboral : " << puestoLaboral << endl;
 	return x.str();
 }
