@@ -13,9 +13,6 @@ ListaEmpleado::~ListaEmpleado(){
 		delete actual;
 	}
 }
-NodoEmpleado* ListaEmpleado::getCabeza() {
-		return cabeza;
-	}
 bool ListaEmpleado::vacio(){
 	return cabeza == NULL;
 }
@@ -30,17 +27,17 @@ int ListaEmpleado::contar(){
 	return cont;
 }
 void ListaEmpleado::agregarEmpleado(Empleado* empleado){
-	NodoEmpleado *aux = new NodoEmpleado(empleado); //crea memoria dinamica para crear un nuevo nodo 
+	NodoEmpleado *aux = new NodoEmpleado(empleado);
 	
-	if(vacio()){   //comprueba si la lista esta vacia 
-		cabeza = aux; //si esta vacia convierte al nuevo nodo en el primero 
+	if(vacio()){
+		cabeza = aux;
 	}else{
 		actual = cabeza;
 		
-		while(actual->getSiguiente() != NULL){//recorre la lista hasta encontrar el ultimo para asi agregar el nuevo 
+		while(actual->getSiguiente() != NULL){
 			actual = actual->getSiguiente();
 		}
-		actual->setSiguiente(aux);//conecta el ultimo nodo con el nuevo 
+		actual->setSiguiente(aux);
 	}
 }
 string ListaEmpleado::mostrar(){
@@ -61,4 +58,4 @@ string ListaEmpleado::mostrar(){
 	}
 	return x.str();
 }
-
+	
