@@ -1,1 +1,448 @@
+#include "Administrativo.h"
+#include "Enfermero.h"
+#include "ListaComprobante.h"
+#include "ListaDepartamento.h"
+#include "ListaEmpleado.h"
+#include "Medico.h"
+#include "Planilla.h"
+#include <fstream>
+#include <iostream>
+#include <string>
 
+using namespace std;
+
+// ==================== LECTURA DE DATOS ====================
+// repiten hasta que el dato sea numero y este en el rango permitido
+
+int leerEntero(string mensaje, int minimo, int maximo){
+	int valor = 0;
+	bool valido = false;
+	while(!valido){
+		cout << mensaje;
+		cin >> valor;
+		if(cin.fail()){
+			cin.clear();
+			cout << "Debe ingresar un numero entero." << endl;
+		}else if(valor < minimo || valor > maximo){
+			cout << "El valor debe estar entre " << minimo << " y " << maximo << "." << endl;
+		}else{
+			valido = true;
+		}
+		cin.ignore(1000, '\n');
+	}
+	return valor;
+}
+	double leerDecimal(string mensaje, double minimo, double maximo){
+	double valor = 0;
+	bool valido = false;
+	while(!valido){
+		cout << mensaje;
+		cin >> valor;
+		if(cin.fail()){
+			cin.clear();
+			cout << "Debe ingresar un numero (use punto para los decimales)." << endl;
+		}else if(valor < minimo || valor > maximo){
+			cout << "El valor debe estar entre " << minimo << " y " << maximo << "." << endl;
+		}else{
+			valido = true;
+		}
+		cin.ignore(1000, '\n');
+	}
+	return valor;
+}
+	
+// lee una sola palabra, por eso en los nombres se usa _ en vez de espacios
+	string leerPalabra(string mensaje){
+	string palabra;
+	cout << mensaje;
+	cin >> palabra;
+	cin.ignore(1000, '\n');
+	return palabra;
+}
+	
+// lee una linea completa (nombre del puesto, que si puede tener espacios)
+	string leerFrase(string mensaje){
+		string frase = "";
+		while(frase == ""){
+			cout << mensaje;
+			getline(cin, frase);
+		}
+	return frase;
+}
+
+	bool confirmar(string mensaje){
+	string respuesta = "";
+	while(respuesta != "s" && respuesta != "n"){
+		cout << mensaje << " (s/n): ";
+		cin >> respuesta;
+		cin.ignore(1000, '\n');
+		}
+	return respuesta == "s";
+}
+
+// Archivos
+	void guardarEmpleados(ListaEmpleado& empleados){
+	ofstream salida("empleados.txt");
+	empleados.autoGuardar(salida);
+	salida.close();
+}
+	
+	void guardarDepartamentos(ListaDepartamento& departamentos){
+	ofstream salida("departamentos.txt");
+	departamentos.autoGuardar(salida);
+	salida.close();
+}
+	
+	void guardarComprobantes(ListaComprobante& comprobantes){
+	ofstream salida("planilla.txt");
+	comprobantes.autoGuardar(salida);
+	salida.close();
+}
+	
+// si un archivo no existe (primera vez) no se carga nada y la lista queda vacia
+	void cargarTodo(ListaEmpleado& empleados, ListaDepartamento& departamentos, ListaComprobante& comprobantes){
+	ifstream archivoDep("departamentos.txt");
+	if(archivoDep){
+		departamentos.autoLeer(archivoDep);
+	}
+	archivoDep.close();
+	ifstream archivoEmp("empleados.txt");
+	if(archivoEmp){
+		empleados.autoLeer(archivoEmp);
+	}
+	archivoEmp.close();
+	ifstream archivoPla("planilla.txt");
+	if(archivoPla){
+		comprobantes.autoLeer(archivoPla, empleados, departamentos);
+	}
+	archivoPla.close();
+}
+	
+// Empleados
+// pide una cedula y devuelve el empleado, o NULL si no existe
+	Empleado *pedirEmpleado(ListaEmpleado& empleados){
+	Empleado *empleado = empleados.buscarPorCedula(leerPalabra("Cedula del empleado: "));
+	if(empleado == NULL){
+		cout << "No existe un empleado con esa cedula." << endl;
+		}
+	return empleado;
+}
+	
+// muestra los departamentos y pide un codigo hasta que exista
+	int leerDepartamentoExistente(ListaDepartamento& departamentos){
+	cout << endl << departamentos.mostrarDepartamentos() << endl;
+	int codigo = leerEntero("Codigo del departamento: ", 1, 9999);
+	while(departamentos.buscarDepartamento(codigo) == NULL){
+		cout << "No existe un departamento con ese codigo." << endl;
+		codigo = leerEntero("Codigo del departamento: ", 1, 9999);
+		}
+	return codigo;
+	}
+	
+	void registrarEmpleado(ListaEmpleado& empleados, ListaDepartamento& departamentos){
+	cout << endl << "--- REGISTRAR EMPLEADO ---" << endl;
+	if(departamentos.vacio()){
+		cout << "Primero debe registrar al menos un departamento." << endl;
+	return;
+	}
+	cout << "1. Medico" << endl << "2. Enfermero" << endl << "3. Administrativo" << endl;
+	int tipo = leerEntero("Tipo de empleado (0 para cancelar): ", 0, 3);
+	if(tipo == 0){
+		return;
+	}
+	string cedula = leerPalabra("Cedula (minimo 9 caracteres, sin espacios): ");
+	while(cedula.length() < 9 || empleados.buscarPorCedula(cedula) != NULL){
+		cout << "Cedula muy corta o ya registrada." << endl;
+		cedula = leerPalabra("Cedula: ");
+	}
+	string nombre = leerPalabra("Nombre (sin espacios, use _ entre palabras): ");
+	int departamento = leerDepartamentoExistente(departamentos);
+	double salario = leerDecimal("Salario base mensual: ", 1, 100000000);
+	int horasExtra = leerEntero("Horas extra del mes: ", 0, 300);
+	if(tipo == 1){
+		string especialidad = leerPalabra("Especialidad (sin espacios): ");
+		int guardias = leerEntero("Cantidad de guardias del mes: ", 0, 31);
+		double pagoGuardia = leerDecimal("Pago por guardia: ", 0, 10000000);
+		empleados.agregarEmpleado(new Medico(nombre, cedula, departamento, salario, horasExtra, especialidad, guardias, pagoGuardia));
+	}else if(tipo == 2){
+		int turnos = leerEntero("Cantidad de turnos nocturnos del mes: ", 0, 31);
+		double pagoTurno = leerDecimal("Pago por turno nocturno: ", 0, 10000000);
+		empleados.agregarEmpleado(new Enfermero(nombre, cedula, departamento, salario, horasExtra, turnos, pagoTurno));
+	}else{
+	string puesto = leerPalabra("Puesto laboral (sin espacios): ");
+	empleados.agregarEmpleado(new Administrativo(nombre, cedula, departamento, salario, horasExtra, puesto));
+	}
+	guardarEmpleados(empleados);
+	cout << "Empleado registrado correctamente." << endl;
+	}
+	void verDetalleEmpleado(ListaEmpleado& empleados){
+		cout << endl << "--- DETALLE DEL EMPLEADO ---" << endl;
+		Empleado *empleado = pedirEmpleado(empleados);
+		if(empleado != NULL){
+			cout << endl << empleado->toString();
+		}
+	}
+	
+	void modificarEmpleado(ListaEmpleado& empleados, ListaDepartamento& departamentos){
+		cout << endl << "--- MODIFICAR EMPLEADO ---" << endl;
+		Empleado *empleado = pedirEmpleado(empleados);
+		if(empleado == NULL){
+			return;
+		}
+	
+	cout << "1. Nombre" << endl << "2. Departamento" << endl << "3. Salario base" << endl << "4. Horas extra del mes" << endl;
+		int opcion = leerEntero("Que desea modificar (0 para cancelar): ", 0, 4);
+		if(opcion == 0){
+			return;
+	}
+	
+	if(opcion == 1){
+			empleado->setNombre(leerPalabra("Nuevo nombre (sin espacios): "));
+	}else if(opcion == 2){
+		empleado->setCodigoDepartamento(leerDepartamentoExistente(departamentos));
+	}else if(opcion == 3){
+		empleado->setSalarioBase(leerDecimal("Nuevo salario base: ", 1, 100000000));
+	}else{
+		empleado->setHorasExtra(leerEntero("Horas extra del mes: ", 0, 300));
+	}
+
+	guardarEmpleados(empleados);
+	cout << "Empleado modificado correctamente." << endl;
+	}
+
+	void eliminarEmpleado(ListaEmpleado& empleados, ListaComprobante& comprobantes){
+		cout << endl << "--- ELIMINAR EMPLEADO ---" << endl;
+		Empleado *empleado = pedirEmpleado(empleados);
+		if(empleado == NULL){
+			return;
+	}
+	
+	// si tuviera comprobantes, estos quedarian apuntando a un empleado que ya no existe
+		if(comprobantes.contarDeEmpleado(empleado) > 0){
+			cout << "No se puede eliminar: el empleado tiene comprobantes de pago." << endl;
+			return;
+	}
+	if(confirmar("Seguro que desea eliminar a " + empleado->getNombre())){
+		empleados.eliminarPorCedula(empleado->getCedula());
+		guardarEmpleados(empleados);
+		cout << "Empleado eliminado correctamente." << endl;
+		}
+	}
+
+	void menuEmpleados(ListaEmpleado& empleados, ListaDepartamento& departamentos, ListaComprobante& comprobantes){
+		int opcion = -1;
+		while(opcion != 0){
+			cout << endl << "===== GESTION DE EMPLEADOS =====" << endl;
+			cout << "1. Registrar empleado" << endl << "2. Listar empleados" << endl << "3. Ver detalle y desglose salarial" << endl;
+			cout << "4. Modificar empleado" << endl << "5. Eliminar empleado" << endl << "0. Volver" << endl;
+			opcion = leerEntero("Opcion: ", 0, 5);
+			switch(opcion){
+				case 1: registrarEmpleado(empleados, departamentos); break;
+				case 2: cout << endl << empleados.mostrar(); break;
+				case 3: verDetalleEmpleado(empleados); break;
+				case 4: modificarEmpleado(empleados, departamentos); break;
+				case 5: eliminarEmpleado(empleados, comprobantes); break;
+			}
+		}
+	}
+
+// Departamentos y Puestos
+// muestra los departamentos y pide un codigo; devuelve NULL si cancela o no existe
+	Departamento *elegirDepartamento(ListaDepartamento& departamentos){
+		if(departamentos.vacio()){
+			cout << "No hay departamentos registrados." << endl;
+			return NULL;
+		}
+	cout << endl << departamentos.mostrarDepartamentos() << endl;
+	int codigo = leerEntero("Codigo del departamento (0 para cancelar): ", 0, 9999);
+	if(codigo == 0){
+		return NULL;
+	}
+
+	Departamento *departamento = departamentos.buscarDepartamento(codigo);
+	if(departamento == NULL){
+		cout << "No existe un departamento con ese codigo." << endl;
+	}
+	return departamento;
+	}
+
+	void registrarDepartamento(ListaDepartamento& departamentos){
+		cout << endl << "--- REGISTRAR DEPARTAMENTO ---" << endl;
+		int codigo = leerEntero("Codigo del departamento (1-9999): ", 1, 9999);
+		while(departamentos.buscarDepartamento(codigo) != NULL){
+			cout << "Ya existe un departamento con ese codigo." << endl;
+			codigo = leerEntero("Codigo del departamento (1-9999): ", 1, 9999);
+		}
+		string nombre = leerPalabra("Nombre (sin espacios, use _ entre palabras): ");
+		departamentos.agregarDepartamento(new Departamento(codigo, nombre));
+		guardarDepartamentos(departamentos);
+		cout << "Departamento registrado correctamente." << endl;
+	}
+
+	void verDetalleDepartamento(ListaDepartamento& departamentos){
+		cout << endl << "--- DETALLE DEL DEPARTAMENTO ---" << endl;
+		Departamento *departamento = elegirDepartamento(departamentos);
+		if(departamento != NULL){
+			cout << endl << departamento->toString();
+		}
+	}
+
+	void agregarPuesto(ListaDepartamento& departamentos){
+		cout << endl << "--- AGREGAR PUESTO ---" << endl;
+		Departamento *departamento = elegirDepartamento(departamentos);
+		if(departamento == NULL){
+			return;
+	}
+	
+	int codigo = leerEntero("Codigo del puesto (1-9999): ", 1, 9999);
+		while(departamento->buscarPuesto(codigo) != NULL){
+			cout << "Ese departamento ya tiene un puesto con ese codigo." << endl;
+			codigo = leerEntero("Codigo del puesto (1-9999): ", 1, 9999);
+		}
+
+	departamento->agregarPuesto(new Puesto(leerFrase("Nombre del puesto: "), codigo));
+		guardarDepartamentos(departamentos);
+		cout << "Puesto agregado correctamente." << endl;
+	}
+
+	void eliminarPuesto(ListaDepartamento& departamentos){
+		cout << endl << "--- ELIMINAR PUESTO ---" << endl;
+		Departamento *departamento = elegirDepartamento(departamentos);
+		if(departamento == NULL){
+			return;
+		}
+
+	cout << endl << departamento->mostrarPuesto();
+		int codigo = leerEntero("Codigo del puesto a eliminar (0 para cancelar): ", 0, 9999);
+		if(codigo != 0 && departamento->eliminarPuesto(codigo)){
+			guardarDepartamentos(departamentos);
+			cout << "Puesto eliminado correctamente." << endl;
+		}else if(codigo != 0){
+			cout << "Ese departamento no tiene un puesto con ese codigo." << endl;
+		}
+	}
+// cuenta los empleados que pertenecen a un departamento
+		int contarEmpleadosDeDepartamento(ListaEmpleado& empleados, int codigo){
+		int cantidad = 0;
+		NodoEmpleado *actual = empleados.getCabeza();
+		while(actual != NULL){
+			if(actual->getDato()->getCodigoDepartamento() == codigo){
+				cantidad++;
+			}
+			actual = actual->getSiguiente();
+		}
+		return cantidad;
+	}
+
+	void eliminarDepartamento(ListaDepartamento& departamentos, ListaEmpleado& empleados, ListaComprobante& comprobantes){
+		cout << endl << "--- ELIMINAR DEPARTAMENTO ---" << endl;
+		Departamento *departamento = elegirDepartamento(departamentos);
+		if(departamento == NULL){
+			return;
+		}
+		int codigo = departamento->getCodigoDepartamento();
+		if(contarEmpleadosDeDepartamento(empleados, codigo) > 0){
+			cout << "No se puede eliminar: tiene empleados asignados." << endl;
+		}else if(comprobantes.contarDeDepartamento(departamento) > 0){
+			cout << "No se puede eliminar: tiene comprobantes de pago." << endl;
+		}else if(confirmar("Se eliminaran tambien sus puestos, desea continuar")){
+			departamentos.eliminarDepartamento(codigo);
+			guardarDepartamentos(departamentos);
+			cout << "Departamento eliminado correctamente." << endl;
+		}
+	}
+	
+	void menuDepartamentos(ListaDepartamento& departamentos, ListaEmpleado& empleados, ListaComprobante& comprobantes){
+		int opcion = -1;
+		while(opcion != 0){
+			cout << endl << "===== DEPARTAMENTOS Y PUESTOS =====" << endl;
+			cout << "1. Registrar departamento" << endl << "2. Listar departamentos" << endl << "3. Ver detalle (con sus puestos)" << endl;
+			cout << "4. Agregar puesto" << endl << "5. Eliminar puesto" << endl << "6. Eliminar departamento" << endl << "0. Volver" << endl;
+			opcion = leerEntero("Opcion: ", 0, 6);
+			switch(opcion){
+				case 1: registrarDepartamento(departamentos); break;
+				case 2: cout << endl << departamentos.mostrarDepartamentos(); break;
+				case 3: verDetalleDepartamento(departamentos); break;
+				case 4: agregarPuesto(departamentos); break;
+				case 5: eliminarPuesto(departamentos); break;
+				case 6: eliminarDepartamento(departamentos, empleados, comprobantes); break;
+			}
+		}
+	}
+// Planilla
+// genera un comprobante de pago por cada empleado y los guarda en planilla.txt
+	
+	void procesarPlanilla(ListaEmpleado& empleados, ListaDepartamento& departamentos, ListaComprobante& comprobantes, Planilla& planilla){
+		cout << endl << "--- PROCESAR PLANILLA ---" << endl;
+		if(empleados.vacio()){
+			cout << "No hay empleados registrados." << endl;
+			return;
+		}
+
+	int mes = leerEntero("Mes (1-12): ", 1, 12);
+	int anio = leerEntero("Anio (2000-2100): ", 2000, 2100);
+	if(comprobantes.existePeriodo(mes, anio)){
+		cout << "Ya se proceso la planilla de ese periodo." << endl;
+		return;
+	}
+	cout << endl << planilla.generarPlanilla() << endl;
+		if(!confirmar("Desea generar y guardar los comprobantes de pago")){
+			return;
+		}
+		
+	int generados = 0;
+		NodoEmpleado *actual = empleados.getCabeza();
+		while(actual != NULL){
+			Empleado *empleado = actual->getDato();
+			Departamento *departamento = departamentos.buscarDepartamento(empleado->getCodigoDepartamento());
+			if(departamento != NULL){
+				comprobantes.agregarComprobante(new ComprobantePago(comprobantes.contar() + 1, mes, anio, empleado, departamento));
+				generados++;
+			}
+			actual = actual->getSiguiente();
+		}
+		
+	guardarComprobantes(comprobantes);
+		cout << generados << " comprobante(s) generado(s) y guardado(s)." << endl;
+	}
+	
+	void menuPlanilla(ListaEmpleado& empleados, ListaDepartamento& departamentos, ListaComprobante& comprobantes, Planilla& planilla){
+		int opcion = -1;
+		while(opcion != 0){
+			cout << endl << "===== PLANILLA =====" << endl;
+			cout << "1. Ver planilla actual" << endl << "2. Procesar planilla del mes (genera comprobantes)" << endl;
+			cout << "3. Ver comprobantes de pago guardados" << endl << "0. Volver" << endl;
+			opcion = leerEntero("Opcion: ", 0, 3);
+			switch(opcion){
+				case 1: cout << endl << planilla.generarPlanilla() << endl; break;
+				case 2: procesarPlanilla(empleados, departamentos, comprobantes, planilla); break;
+				case 3: cout << endl << comprobantes.mostrar(); break;
+			}
+		}
+	}
+//Programa Principal
+
+	int main(){
+		ListaEmpleado empleados;
+		ListaDepartamento departamentos;
+		ListaComprobante comprobantes; // se declara despues para que se destruya primero
+		
+		cargarTodo(empleados, departamentos, comprobantes);
+		Planilla planilla(&empleados, &departamentos);
+		
+		cout << "===== SISTEMA DE PLANILLA HOSPITALARIA =====" << endl;
+		cout << "Datos cargados: " << departamentos.contar() << " departamento(s), " << empleados.contar() << " empleado(s) y " << comprobantes.contar() << " comprobante(s) de pago." << endl;
+		int opcion = -1;
+		while(opcion != 0){
+			cout << endl << "===== MENU PRINCIPAL =====" << endl;
+			cout << "1. Gestion de empleados" << endl << "2. Gestion de departamentos y puestos" << endl << "3. Planilla" << endl << "0. Salir" << endl;
+			opcion = leerEntero("Opcion: ", 0, 3);
+			switch(opcion){
+				case 1: menuEmpleados(empleados, departamentos, comprobantes); break;
+				case 2: menuDepartamentos(departamentos, empleados, comprobantes); break;
+				case 3: menuPlanilla(empleados, departamentos, comprobantes, planilla); break;
+			}
+		}
+		cout << endl << "Los datos ya estan guardados. Hasta luego." << endl;
+	return 0;
+}
