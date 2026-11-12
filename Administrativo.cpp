@@ -1,3 +1,6 @@
+//Principio SOLID sustitucion de Liskov, en nuestra clase de Administrativo no le agregamos bonificaciones entonces devolvera 0 y no dara error
+//ya que recordemos que este principio dice que donde espera un objeto de la clase padre debe de ser capaz de recibir uno de la clase hija 
+
 #include "Administrativo.h"
 
 Administrativo::Administrativo() : Empleado() {
