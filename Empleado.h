@@ -1,3 +1,5 @@
+//Principio SOLID abierto/cerrado, se puede comprobar que se cumple ya que si creamos otra clase hija
+//no se tendr que modificar ninguna otra clase hija
 #ifndef EMPLEADO_H
 #define EMPLEADO_H
 #include <iostream>
