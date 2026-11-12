@@ -1,3 +1,5 @@
+//Principio SOLID sobre responsabilidad unica, lo podemos ver tanto en NodoEmpleado como en cualquier otro Nodo de nuestro codigo
+//ya que los nodos solo se encargan de enlazar guardar un dato y un puntero al siguiente Nodo, no guardan ni buscan ni eliminan ya que esas funciones se encarga las Listas y por eso se cumple el principio
 #include "NodoEmpleado.h"
 
 NodoEmpleado::NodoEmpleado(Empleado* dato) {
